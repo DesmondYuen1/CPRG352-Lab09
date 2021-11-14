@@ -33,7 +33,7 @@ public class UserDB {
     public void insert(User user) throws Exception {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
         EntityTransaction trans = em.getTransaction();
-        
+
         try {
             Role role = user.getRole();
             role.getUserList().add(user);
@@ -49,38 +49,35 @@ public class UserDB {
     }
 
     public void update(User user) throws Exception {
-        ConnectionPool cp = ConnectionPool.getInstance();
-        Connection con = cp.getConnection();
-        PreparedStatement ps = null;
-        String sql = "UPDATE user SET active=?, first_name=?, last_name=?, role=? WHERE email=?";
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+        EntityTransaction trans = em.getTransaction();
 
         try {
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, user.getRole());
-            ps.setString(2, user.getFirst_name());
-            ps.setString(3, user.getLast_name());
-            ps.setBoolean(4, user.isActive());
-            ps.setString(5, user.getEmail());
-            ps.executeUpdate();
+            trans.begin();
+            em.merge(user);
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
         } finally {
-            DBUtil.closePreparedStatement(ps);
-            cp.freeConnection(con);
+            em.close();
         }
     }
 
     public void delete(User user) throws Exception {
-        ConnectionPool cp = ConnectionPool.getInstance();
-        Connection con = cp.getConnection();
-        PreparedStatement ps = null;
-        String sql = "DELETE FROM user WHERE email=?";
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+        EntityTransaction trans = em.getTransaction();
 
         try {
-            ps = con.prepareStatement(sql);
-            ps.setString(1, user.getEmail());
-            ps.executeUpdate();
+            Role role = user.getRole();
+            role.getUserList().remove(user);
+            trans.begin();
+            em.remove(em.merge(user));
+            em.merge(role);
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
         } finally {
-            DBUtil.closePreparedStatement(ps);
-            cp.freeConnection(con);
+            em.close();
         }
     }
 }
