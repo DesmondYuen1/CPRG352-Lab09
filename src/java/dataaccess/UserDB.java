@@ -31,23 +31,20 @@ public class UserDB {
     }
 
     public void insert(User user) throws Exception {
-        ConnectionPool cp = ConnectionPool.getInstance();
-        Connection con = cp.getConnection();
-        PreparedStatement ps = null;
-        String sql = "INSERT INTO user (email, active, first_name, last_name, password, role) VALUES (?, ?, ?, ?, ?, ?)";
-
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+        EntityTransaction trans = em.getTransaction();
+        
         try {
-            ps = con.prepareStatement(sql);
-            ps.setString(1, user.getEmail());
-            ps.setBoolean(2, user.isActive());
-            ps.setString(3, user.getFirst_name());
-            ps.setString(4, user.getLast_name());
-            ps.setString(5, user.getPassword());
-            ps.setInt(6, user.getRole());
-            ps.executeUpdate();
+            Role role = user.getRole();
+            role.getUserList().add(user);
+            trans.begin();
+            em.persist(user);
+            em.merge(role);
+            trans.commit();
+        } catch (Exception ex) {
+            trans.rollback();
         } finally {
-            DBUtil.closePreparedStatement(ps);
-            cp.freeConnection(con);
+            em.close();
         }
     }
 
