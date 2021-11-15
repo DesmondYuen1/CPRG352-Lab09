@@ -12,7 +12,7 @@ public class UserDB {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
 
         try {
-            Role role = em.find(Role.class, em);
+            Role role = new Role();
             return role.getUserList();
         } finally {
             em.close();
