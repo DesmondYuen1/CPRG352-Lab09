@@ -6,7 +6,7 @@ import models.User;
 
 public class RoleDB {
 
-    public Role getAll(int roleId) throws Exception {
+    public Role get(int roleId) throws Exception {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
 
         try {

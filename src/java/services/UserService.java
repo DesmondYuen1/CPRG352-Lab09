@@ -1,5 +1,6 @@
 package services;
 
+import dataaccess.RoleDB;
 import dataaccess.UserDB;
 import java.util.List;
 import models.Role;
@@ -7,9 +8,9 @@ import models.User;
 
 public class UserService {
 
-    public List<User> getAll() throws Exception {
+    public List<User> getAll(String email) throws Exception {
         UserDB userDB = new UserDB();
-        List<User> users = userDB.getAll();
+        List<User> users = userDB.getAll(email);
         return users;
     }
 
@@ -19,22 +20,30 @@ public class UserService {
         return user;
     }
 
-    public void insert(String email, Boolean active, String first_name, String last_name, String password, int role) throws Exception {
-        User user = new User(email, active, first_name, last_name, password);
+    public void insert(String email, Boolean active, String firstName, String lastName, String password, int roleId) throws Exception {
+        User user = new User(email, active, firstName, lastName, password);
         RoleDB roleDB = new RoleDB();
-        Role role = roleDB.get(role);
+        Role role = roleDB.get(roleId);
+        user.setRole(role);
+        
+        UserDB userDB = new UserDB();
+        userDB.insert(user);
     }
 
-    public void update(String email, Boolean active, String first_name, String last_name, String password, int role) throws Exception {
-        User user = new User(email, active, first_name, last_name, password, role);
+    public void update(String email, Boolean active, String firstName, String lastName, String password, int roleId) throws Exception {
         UserDB userDB = new UserDB();
-        userDB.update(user);
+        User user = userDB.get(email);
+        user.setActive(active);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        RoleDB roleDB = new RoleDB();
+        Role role = roleDB.get(roleId);
+        user.setRole(role);
     }
 
     public void delete(String email) throws Exception {
-        User user = new User();
-        user.setEmail(email);
         UserDB userDB = new UserDB();
+        User user = userDB.get(email);
         userDB.delete(user);
     }
 

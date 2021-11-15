@@ -8,11 +8,11 @@ import models.User;
 
 public class UserDB {
 
-    public List<User> getAll() throws Exception {
+    public List<User> getAll(String email) throws Exception {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
 
         try {
-            Role role = new Role();
+            Role role = em.find(Role.class, email);
             return role.getUserList();
         } finally {
             em.close();
