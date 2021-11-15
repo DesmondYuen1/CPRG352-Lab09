@@ -12,7 +12,7 @@
                 color: white;
             }
             #addUser {
-                padding-right: 20px;
+                margin-right: 20px;
                 display: inline-block;
                 position: relative;
             }
@@ -21,14 +21,13 @@
                 position: absolute;
             }
             #editUser {
-                padding-left: 710px;
+                margin-left: 550px;
                 display: inline-block;
                 position: absolute;
             }
         </style>
     </head>
     <body>
-
         <div id="addUser">
             <h1>Add User</h1>
             <form action="" method="POST">
@@ -69,10 +68,10 @@
                 <c:forEach items="${users}" var="user">
                     <tr>
                         <td>${user.email}</td>
-                        <td>${user.first_name}</td>
-                        <td>${user.last_name}</td>
-                        <td><a href="users?action=edit&selectedUser=${user.email}">Edit</a></td>
-                        <td><a href="users?action=delete&deletedUser=${user.email}">Delete</a></td>
+                        <td>${user.firstName}</td>
+                        <td>${user.lastName}</td>
+                        <td><a href="users?action=edit&email=${user.email}">Edit</a></td>
+                        <td><a href="users?action=delete&email=${user.email}">Delete</a></td>
                     </tr>
                 </c:forEach>
 
@@ -82,7 +81,7 @@
         <div id="editUser">
             <h1>Edit User</h1>
 
-            <form action="" method="POST">
+            <form action="user" method="POST">
                 <input type="text" name="first_nameUp" placeholder="First Name" value="${selectedUser.first_name}"><br>
                 <input type="text" name="last_nameUp" placeholder="Last Name" value="${selectedUser.last_name}"><br>
 

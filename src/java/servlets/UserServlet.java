@@ -20,52 +20,32 @@ public class UserServlet extends HttpServlet {
         UserService us = new UserService();
 
         String action = request.getParameter("action");
-        if (action != null) {
 
-            if (action.equals("edit")) {
-                String selectedUser = request.getParameter("selectedUser");
-                try {
-                    User user = us.get(selectedUser);
-                    request.setAttribute("selectedUser", user);
-                    try {
-                        List<User> users = us.getAll();
-                        request.setAttribute("users", users);
-                    } catch (Exception ex) {
-                        Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
-                    return;
-                } catch (Exception ex) {
-                    Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (action.equals("delete")) {
-                String deletedUser = request.getParameter("deletedUser");
-                try {
-                    us.delete(deletedUser);
-                } catch (Exception ex) {
-                    Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
+        if (action != null && action.equals("edit")) {
+            String email = request.getParameter("email");
             try {
-                List<User> users = us.getAll();
-                request.setAttribute("users", users);
+                User editUser = us.get(email);
+                request.setAttribute("editUser", editUser);
+
             } catch (Exception ex) {
                 Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            response.sendRedirect("users");
-            return;
-        }
+        } else if (action != null && action.equals("delete")) {
+            String deletedUser = request.getParameter("deletedUser");
+            try {
+                us.delete(deletedUser);
+            } catch (Exception ex) {
+                Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
+        }
+        
         try {
             List<User> users = us.getAll();
             request.setAttribute("users", users);
         } catch (Exception ex) {
             Logger.getLogger(UserServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         getServletContext().getRequestDispatcher("/WEB-INF/users.jsp").forward(request, response);
         return;
 

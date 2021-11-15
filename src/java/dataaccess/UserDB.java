@@ -1,5 +1,6 @@
 package dataaccess;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -8,12 +9,18 @@ import models.User;
 
 public class UserDB {
 
-    public List<User> getAll(String email) throws Exception {
+    public List<User> getAll() throws Exception {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
 
         try {
-            Role role = em.find(Role.class, email);
-            return role.getUserList();
+            ArrayList<User> userList = new ArrayList<User>();
+            for (int i = 1; i <= 3; i++) {
+                Role role = em.find(Role.class, i);
+                for (int n = 0; n < role.getUserList().size(); n++) {
+                    userList.add(role.getUserList().get(n));
+                }
+            }
+            return userList;
         } finally {
             em.close();
         }
