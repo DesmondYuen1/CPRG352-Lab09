@@ -23,7 +23,7 @@ public class UserService {
     public void insert(String email, Boolean active, String firstName, String lastName, String password, int roleId) throws Exception {
         User user = new User(email, active, firstName, lastName, password);
         RoleDB roleDB = new RoleDB();
-        Role role = roleDB.get(roleId);
+        Role role = roleDB.getAll(roleId);
         user.setRole(role);
         
         UserDB userDB = new UserDB();
@@ -37,7 +37,7 @@ public class UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         RoleDB roleDB = new RoleDB();
-        Role role = roleDB.get(roleId);
+        Role role = roleDB.getAll(roleId);
         user.setRole(role);
     }
 
